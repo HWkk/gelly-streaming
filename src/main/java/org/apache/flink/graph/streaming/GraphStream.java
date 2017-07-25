@@ -131,11 +131,11 @@ public abstract class GraphStream<K, VV, EV> {
 	/**
 	 * Applies an incremental aggregation on a graphstream and returns a stream of aggregation results 
 	 * 
-	 * @param summaryAggregation
+	 * @param graphAggregation
 	 * @param <S>
 	 * @param <T>
      * @return
      */
 	public abstract <S extends Serializable, T> DataStream<T> aggregate(
-			SummaryAggregation<K,EV,S,T> summaryAggregation);
+			GraphAggregation<K,EV,S,T> graphAggregation);
 }

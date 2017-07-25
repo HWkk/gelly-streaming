@@ -209,7 +209,7 @@ public class IterativeConnectedComponents implements ProgramDescription {
 					});
 		}
 
-		return env.generateSequence(1, 10).flatMap(
+		return env.generateSequence(1, 3).flatMap(
 				new FlatMapFunction<Long, Tuple2<Long, Long>>() {
 					@Override
 					public void flatMap(Long key, Collector<Tuple2<Long, Long>> out) throws Exception {

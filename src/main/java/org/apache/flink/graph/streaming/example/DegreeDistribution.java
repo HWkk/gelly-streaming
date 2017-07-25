@@ -55,7 +55,8 @@ public class DegreeDistribution {
 				.keyBy(0).flatMap(new VertexDegreeCounts())
 				// group by degree and emit current count
 				.keyBy(0).map(new DegreeDistributionMap())
-				.writeAsText(resultPath);
+				.print();
+				//.writeAsText(resultPath);
 
 		env.execute("Streaming Degree Distribution");
 	}
@@ -177,12 +178,20 @@ public class DegreeDistribution {
 					});
 		}
 
+//		return env.fromElements(
+//				new Tuple3<>(1, 2, EventType.EDGE_ADDITION),
+//				new Tuple3<>(2, 3, EventType.EDGE_ADDITION),
+//				new Tuple3<>(1, 4, EventType.EDGE_ADDITION),
+//				new Tuple3<>(2, 3, EventType.EDGE_DELETION),
+//				new Tuple3<>(3, 4, EventType.EDGE_ADDITION),
+//				new Tuple3<>(1, 2, EventType.EDGE_DELETION));
+
 		return env.fromElements(
 				new Tuple3<>(1, 2, EventType.EDGE_ADDITION),
 				new Tuple3<>(2, 3, EventType.EDGE_ADDITION),
 				new Tuple3<>(1, 4, EventType.EDGE_ADDITION),
-				new Tuple3<>(2, 3, EventType.EDGE_DELETION),
+				new Tuple3<>(2, 5, EventType.EDGE_ADDITION),
 				new Tuple3<>(3, 4, EventType.EDGE_ADDITION),
-				new Tuple3<>(1, 2, EventType.EDGE_DELETION));
+				new Tuple3<>(3, 6, EventType.EDGE_ADDITION));
 	}
 }

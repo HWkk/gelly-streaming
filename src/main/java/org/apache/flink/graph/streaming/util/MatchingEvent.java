@@ -27,12 +27,12 @@ public class MatchingEvent extends Tuple2<MatchingEvent.Type, Edge<Long, Long>> 
 
 	public MatchingEvent() {}
 
-	public MatchingEvent(MatchingEvent.Type type, Edge<Long, Long> edge) throws Exception {
+	public MatchingEvent(Type type, Edge<Long, Long> edge) throws Exception {
 		this.f0 = type;
 		this.f1 = edge;
 	}
 
-	public MatchingEvent.Type geType() {
+	public Type geType() {
 		return this.f0;
 	}
 

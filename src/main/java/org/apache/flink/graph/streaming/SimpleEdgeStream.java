@@ -43,10 +43,10 @@ import java.util.*;
 
 /**
  *
- * Represents a graph stream where the stream consists solely of {@link org.apache.flink.graph.Edge edges}.
+ * Represents a graph stream where the stream consists solely of {@link Edge edges}.
  * <p>
  *
- * @see org.apache.flink.graph.Edge
+ * @see Edge
  *
  * @param <K> the key type for edge and vertex identifiers.
  * @param <EV> the value type for edges.
@@ -61,7 +61,7 @@ public class SimpleEdgeStream<K, EV> extends GraphStream<K, NullValue, EV> {
 	 * Creates a graph from an edge stream.
 	 * The time characteristic is set to ingestion time  by default.
 	 * 
-	 * @see {@link org.apache.flink.streaming.api.TimeCharacteristic}
+	 * @see {@link TimeCharacteristic}
 	 *
 	 * @param edges a DataStream of edges.
 	 * @param context the flink execution environment.
@@ -77,7 +77,7 @@ public class SimpleEdgeStream<K, EV> extends GraphStream<K, NullValue, EV> {
 	 * 
 	 * The time characteristic is set to event time.
 	 * 
-	 * @see {@link org.apache.flink.streaming.api.TimeCharacteristic}
+	 * @see {@link TimeCharacteristic}
 	 * 
 	 * @param edges a DataStream of edges.
 	 * @param timeExtractor the timestamp extractor.
@@ -92,13 +92,13 @@ public class SimpleEdgeStream<K, EV> extends GraphStream<K, NullValue, EV> {
 	/**
 	 * Applies an incremental aggregation on a graphstream and returns a stream of aggregation results 
 	 * 
-	 * @param summaryAggregation
+	 * @param graphAggregation
 	 * @param <S>
 	 * @param <T>
      * @return
      */
-	public <S extends Serializable, T> DataStream<T> aggregate(SummaryAggregation<K,EV,S,T> summaryAggregation) {
-		return summaryAggregation.run(getEdges());//FIXME
+	public <S extends Serializable, T> DataStream<T> aggregate(GraphAggregation<K,EV,S,T> graphAggregation) {
+		return graphAggregation.run(getEdges());//FIXME
 	}
 	
 	/**
@@ -132,7 +132,7 @@ public class SimpleEdgeStream<K, EV> extends GraphStream<K, NullValue, EV> {
 	 * @param size the size of the window
 	 * @return a GraphWindowStream of the specified size 
 	 */
-	public SnapshotStream<K, EV> slice(Time size) {
+	public GraphWindowStream<K, EV> slice(Time size) {
 		return slice(size, EdgeDirection.OUT);
 	}
 
@@ -146,19 +146,19 @@ public class SimpleEdgeStream<K, EV> extends GraphStream<K, NullValue, EV> {
 	 * @param direction the EdgeDirection to key by
 	 * @return a GraphWindowStream of the specified size, keyed by
 	 */
-	public SnapshotStream<K, EV> slice(Time size, EdgeDirection direction)
+	public GraphWindowStream<K, EV> slice(Time size, EdgeDirection direction)
 		throws IllegalArgumentException {
 
 		switch (direction) {
 		case IN:
-			return new SnapshotStream<K, EV>(
+			return new GraphWindowStream<K, EV>(
 				this.reverse().getEdges().keyBy(new NeighborKeySelector<K, EV>(0)).timeWindow(size));
 		case OUT:
-			return new SnapshotStream<K, EV>(
+			return new GraphWindowStream<K, EV>(
 				getEdges().keyBy(new NeighborKeySelector<K, EV>(0)).timeWindow(size));
 		case ALL:
 			getEdges().keyBy(0).timeWindow(size);
-			return new SnapshotStream<K, EV>(
+			return new GraphWindowStream<K, EV>(
 				this.undirected().getEdges().keyBy(
 					new NeighborKeySelector<K, EV>(0)).timeWindow(size));
 		default:

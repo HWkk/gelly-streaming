@@ -58,7 +58,7 @@ public class WindowTriangles implements ProgramDescription {
         SimpleEdgeStream<Long, NullValue> edges = getGraphStream(env);
 
         DataStream<Tuple2<Integer, Long>> triangleCount = 
-        	edges.slice(windowTime, EdgeDirection.ALL)
+        	 edges.slice(windowTime, EdgeDirection.ALL)
         	.applyOnNeighbors(new GenerateCandidateEdges())
         	.keyBy(0, 1).timeWindow(windowTime)
 			.apply(new CountTriangles())

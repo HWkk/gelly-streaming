@@ -55,8 +55,8 @@ public class SemiClusteringExample implements ProgramDescription {
     private static String edgeInputPath = null;
     private static long mergeWindowTime = 1000;
     private static long printWindowTime = 2000;
-    private static Long maxVertices = 5l; //每个cluster中可以包含节点的最大数量
-    private static Long maxClusters = 3l; //每个TreeSet中可以包含cluster的最大数量
+    private static Long maxVertices = 4l; //每个cluster中可以包含节点的最大数量
+    private static Long maxClusters = 2l; //每个TreeSet中可以包含cluster的最大数量
     private static double scoreFactor = 0.5; //分数因子
 
     private static boolean parseParameters(String[] args) {
@@ -98,7 +98,7 @@ public class SemiClusteringExample implements ProgramDescription {
                         }
                     }), env);
         }
-
+//
 //        DataStream edges = env.fromElements(
 //                new Edge<>(1l, 2l, 1.0),
 //                new Edge<>(2l, 3l, 1.0),

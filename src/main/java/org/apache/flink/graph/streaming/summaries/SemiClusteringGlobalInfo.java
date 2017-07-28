@@ -1,11 +1,11 @@
 package org.apache.flink.graph.streaming.summaries;
 
-
-import org.apache.flink.graph.streaming.library.LabelPropagation;
-
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * 存储Semi-Clustering算法的图数据信息，包含一些对图数据进行处理的方法
+ */
 public class SemiClusteringGlobalInfo implements Serializable {
 
     private Map<Long, TreeSet<SemiCluster>> clusterMap;
@@ -26,6 +26,12 @@ public class SemiClusteringGlobalInfo implements Serializable {
         this.scoreFactor = scoreFactor;
     }
 
+    /**
+     * 对新添加的边数据进行处理
+     * @param vertex1 源顶点
+     * @param vertex2 目的顶点
+     * @param edgeValue 边的权值
+     */
     public void addEdge(Long vertex1, Long vertex2, Double edgeValue) {
 
         if (!clusterMap.containsKey(vertex1))
@@ -40,6 +46,10 @@ public class SemiClusteringGlobalInfo implements Serializable {
         sendClusters(clusterMap.get(vertex2), vertex1);
     }
 
+    /**
+     * 增加新顶点
+     * @param vertex
+     */
     public void addVertex(Long vertex) {
 
 //        Double edgeValueSum = 0d;
@@ -53,6 +63,11 @@ public class SemiClusteringGlobalInfo implements Serializable {
         neighbors.put(vertex, new HashMap<>());
     }
 
+    /**
+     * 将顶点的社区集合发送给邻接点
+     * @param clusters 社区集合
+     * @param receiver 邻接点
+     */
     public void sendClusters(TreeSet<SemiCluster> clusters, Long receiver) {
 
         TreeSet<SemiCluster> oriSet = clusterMap.get(receiver);
@@ -113,12 +128,20 @@ public class SemiClusteringGlobalInfo implements Serializable {
         return false;
     }
 
+    /**
+     * 顶点的社区集合已经改变，将其改变通知给邻接点
+     * @param vertex
+     */
     public void spread(Long vertex) {
 
         for (Long neighbor : neighbors.get(vertex).keySet())
             sendClusters(clusterMap.get(vertex), neighbor);
     }
 
+    /**
+     * 将不同分区的图数据进行整合
+     * @param sc
+     */
     public void merge(SemiClusteringGlobalInfo sc) {
 
         HashSet<Long> needToSpread = new HashSet<>();
@@ -152,5 +175,18 @@ public class SemiClusteringGlobalInfo implements Serializable {
 
         for (Long vertex : needToSpread)
             spread(vertex);
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder("");
+        for (Map.Entry<Long, TreeSet<SemiCluster>> entry : clusterMap.entrySet()) {
+            sb.append(entry.getKey() + " ");
+            for (SemiCluster sc : entry.getValue())
+                sb.append(sc + " ");
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 }

@@ -1,11 +1,7 @@
 package org.apache.flink.graph.streaming.summaries;
 
-
-import org.apache.flink.graph.Edge;
-
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class SemiCluster implements Comparable<SemiCluster>, Serializable{
 
@@ -96,5 +92,4 @@ public class SemiCluster implements Comparable<SemiCluster>, Serializable{
                 ", vertices=" + vertices +
                 '}';
     }
-
 }
